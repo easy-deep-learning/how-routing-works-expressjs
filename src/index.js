@@ -10,6 +10,10 @@ const productsStub = [
   { id: 1, name: 'iphone SE 2020', count: 400, slug: 'iphone_SE_2020' },
 ]
 
+app.use((req, res, next) => {
+  
+})
+
 app.get('/', (req, res) => {
   res.send(`Hello World! Now is ${Date.now()}`)
   
