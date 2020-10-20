@@ -102,7 +102,44 @@ app.get('/section/:sectionId/category/:categoryId', (req, res) => {
 - [Path examples](https://expressjs.com/en/4x/api.html#path-examples),
 - [app.param](https://expressjs.com/en/4x/api.html#app.param).
 
+#### Router
+С ростом приложения и увеличением количества маршрутов 
+становится удобным выносить роутинг в отдельные файлы.
 
+Отдельный роутинг можно организивать через `express.Router()` —
+вызов этой функции возвратит отдельный роутер.
+
+Пример использования:
+
+*index.js*
+```js
+const express = require('express')
+const app = express()
+/*
+* Передаем `express` в модуль `router` чтобы внутри этого модуля вызвать `express.Router()`
+*/
+const router = require('./router')(express)
+
+app.use(router)
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
+```
+
+*router.js*
+```js
+const router = require('express').Router()
+
+router.route('/cart/:id')
+      .get((req, res, next) => {})
+      .patch((req, res, next) => {})
+      .delete((req, res, next) => {})
+
+
+module.exports = router
+```
+
+См. подробное описание в `src/router`.
 
 ### Дополнительно
 - [Express Route Tester](http://forbeslindesay.github.io/express-route-tester)

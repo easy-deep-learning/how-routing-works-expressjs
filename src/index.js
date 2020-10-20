@@ -1,5 +1,8 @@
 const express = require('express')
 const app = express()
+const router = require('./router')
+
+
 const port = 3000
 const productsStub = [
   { id: 1, name: 'iphone 12', price: 600,  slug: 'iphone_12'},
@@ -16,18 +19,14 @@ app.get('/', (req, res) => {
   // res.redirect('/cart');
 })
 
-/**
- * Обработка HTTP-запроса
- * GET /cart
- */
-app.get('/cart', (req, res) => {
-  res.json({
-    items: [
-      { id: 1, name: 'iphone 12', count: 2, total_price: 1200 },
-    ],
-    comment: 'My comment',
-  })
-})
+/*
+ * Для сущности `products` реализован набор CRUD-операций
+ * - create
+ * - read
+ * - update
+ * - delete
+ * */
+
 
 /**
  * Обработка HTTP-запроса
@@ -89,13 +88,10 @@ app.delete('/products/:slug', (req, res) => {
 
 })
 
-/*
-* Для сужности `products` реализован набор CRUD-операций
-* - create
-* - read
-* - update
-* - delete
-* */
+/**
+ * Роутинг для остальных сущностей вынесен в роутер
+ */
+app.use(router)
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
