@@ -101,3 +101,11 @@ app.get('/section/:sectionId/category/:categoryId', (req, res) => {
 Подробности — в документации 
 - [Path examples](https://expressjs.com/en/4x/api.html#path-examples),
 - [app.param](https://expressjs.com/en/4x/api.html#app.param).
+
+
+
+### Дополнительно
+- [Express Route Tester](http://forbeslindesay.github.io/express-route-tester)
+- [Representational State Transfer — «передача состояния представления»](https://ru.wikipedia.org/wiki/REST)
+- [HTTP#Методы](https://ru.wikipedia.org/wiki/HTTP#Методы)
+- [CRUD](https://ru.wikipedia.org/wiki/CRUD)
