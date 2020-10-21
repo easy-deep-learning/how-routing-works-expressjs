@@ -61,7 +61,20 @@ module.exports = {
    * @return {Promise<ProductData>}
    */
   updateById: (id, data) => {
+    //@TODO: проверка, если нет записи с id
+    
     const sql = (`
+      UPDATE ${tableName}
+      SET
+        slug = '${data.slug}',
+        name = '${data.name}',
+        is_in_store = '${data.is_in_store}',
+        price = '${data.price}',
+        qty = '${data.qty}',
+        desc = '${data.desc}',
+        main_photo = '${data.main_photo}',
+        updated_at = '${data.updated_at}'
+      WHERE id = ${id}
     `)
 
     return new Promise((resolve, reject) => {
