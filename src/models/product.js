@@ -1,4 +1,4 @@
-const db = require('../../db')
+const dbConnect = require('../../db')
 const tableName = 'products'
 
 module.exports = {
@@ -7,6 +7,8 @@ module.exports = {
    * @return {Promise<ProductData>}
    */
   create: (data) => {
+    //@TODO: добавить валидацию `data`
+    
     const sql = (`
       INSERT INTO ${tableName}
       (
@@ -22,19 +24,21 @@ module.exports = {
       )
       VALUES
       (
-        ${data.slug},
-        ${data.name},
+        '${data.slug}',
+        '${data.name}',
         ${data.is_in_store},
         ${data.price},
         ${data.qty},
-        ${data.desc},
-        ${data.main_photo},
+        '${data.desc}',
+        '${data.main_photo}',
         ${data.created_at},
         ${data.updated_at}
       )
     `)
 
     return new Promise((resolve, reject) => {
+      const db = dbConnect()
+      
       db.run(sql, (error) => {
         if (error) {
           reject(error)
@@ -61,6 +65,8 @@ module.exports = {
     `)
 
     return new Promise((resolve, reject) => {
+      const db = dbConnect()
+      
       db.run(sql, (error) => {
         if (error) {
           reject(error)
@@ -89,6 +95,8 @@ module.exports = {
     `)
 
     return new Promise((resolve, reject) => {
+      const db = dbConnect()
+      
       db.get(sql, (error, row) => {
         if (error) {
           reject(error)
@@ -117,6 +125,8 @@ module.exports = {
     `)
 
     return new Promise((resolve, reject) => {
+      const db = dbConnect()
+      
       db.all(sql, (error, rows) => {
         if (error) {
           reject(error)
@@ -145,6 +155,8 @@ module.exports = {
     `)
 
     return new Promise((resolve, reject) => {
+      const db = dbConnect()
+      
       db.run(sql, (error) => {
         if (error) {
           reject(error)
