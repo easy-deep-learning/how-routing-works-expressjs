@@ -29,8 +29,8 @@ module.exports = {
         ${data.qty},
         ${data.desc},
         ${data.main_photo},
-        ${data.created_at || Date.now()},
-        ${data.updated_at || Date.now()}
+        ${data.created_at},
+        ${data.updated_at}
       )
     `)
 
@@ -52,10 +52,11 @@ module.exports = {
   },
 
   /**
+   * @param {Number} id
    * @param {ProductData} data
    * @return {Promise<ProductData>}
    */
-  update: (data) => {
+  updateById: (id, data) => {
     const sql = (`
     `)
 

@@ -1,4 +1,6 @@
 const express = require('express')
+const bodyParser = require('body-parser')
+
 const app = express()
 const router = require('./router')
 
@@ -10,9 +12,8 @@ const productsStub = [
   { id: 1, name: 'iphone SE 2020', count: 400, slug: 'iphone_SE_2020' },
 ]
 
-app.use((req, res, next) => {
-  
-})
+// parse application/json
+app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
   res.send(`Hello World! Now is ${Date.now()}`)
