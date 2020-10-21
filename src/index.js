@@ -4,9 +4,6 @@ const bodyParser = require('body-parser')
 const app = express()
 const router = require('./router')
 
-
-const port = 3000
-
 // parse application/json
 app.use(bodyParser.json())
 
@@ -24,6 +21,6 @@ app.get('/', (req, res) => {
  */
 app.use(router)
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+app.listen(process.env.APP_PORT, () => {
+  console.log(`Example app listening at http://localhost:${process.env.APP_PORT}`)
 })
