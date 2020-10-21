@@ -100,4 +100,6 @@ module.exports = (router) => {
           res.status(500).send('Something broke!')
         })
     })
+  
+  return router
 }

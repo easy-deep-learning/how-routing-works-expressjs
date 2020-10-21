@@ -32,4 +32,6 @@ module.exports = (router) => {
      * DELETE
      * */
     .delete((req, res, next) => {})
+  
+  return router
 }
