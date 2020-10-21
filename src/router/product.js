@@ -39,6 +39,7 @@ module.exports = (router) => {
       /*
        * TODO: проверка прав
        * */
+      next()
     })
     /*
      * READ
