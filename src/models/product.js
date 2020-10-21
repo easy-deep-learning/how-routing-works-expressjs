@@ -73,6 +73,7 @@ module.exports = {
         qty = '${data.qty}',
         desc = '${data.desc}',
         main_photo = '${data.main_photo}',
+        created_at = '${data.created_at}',
         updated_at = '${data.updated_at}'
       WHERE id = ${id}
     `)
