@@ -12,11 +12,14 @@ module.exports = (router) => {
       /*
       * TODO: проверка прав
       * */
+      next()
     })
     /*
     * READ
     * */
-    .get((req, res, next) => {})
+    .get((req, res, next) => {
+      res.send('get TODO')
+    })
     
     /*
      * UPDATE
@@ -26,10 +29,16 @@ module.exports = (router) => {
      * - patch заменяет часть данных
      * - put заменяет всю сущность
      * */
-    .patch((req, res, next) => {})
+    .patch((req, res, next) => {
+      res.send('patch TODO')
+    })
     
     /*
      * DELETE
      * */
-    .delete((req, res, next) => {})
+    .delete((req, res, next) => {
+      res.send('delete TODO')
+    })
+  
+  return router
 }

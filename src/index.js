@@ -1,14 +1,19 @@
 const express = require('express')
+const bodyParser = require('body-parser')
+
 const app = express()
 
-
-const port = 3000
+const port = 3030
 const productsStub = [
   { id: 1, name: 'iphone 12', price: 600,  slug: 'iphone_12'},
-  { id: 1, name: 'iphone 12 mini', price: 500, slug: 'iphone_12_mini' },
-  { id: 1, name: 'iphone SE 2020', count: 400, slug: 'iphone_SE_2020' },
+  { id: 2, name: 'iphone 12 mini', price: 500, slug: 'iphone_12_mini' },
+  { id: 3, name: 'iphone SE 2020', count: 400, slug: 'iphone_SE_2020' },
 ]
 
+// parse application/json
+app.use(bodyParser.json())
+
+// Routing
 app.get('/', (req, res) => {
   res.send(`Hello World! Now is ${Date.now()}`)
   
@@ -40,7 +45,13 @@ app.get('/products', (req, res) => {
  * POST /products
  */
 app.post('/products', (req, res) => {
-  res.send('TODO')
+  const data = req.body
+
+  data.id = productsStub.length
+
+  productsStub.push(data)
+  
+  res.json(data)
 })
 
 /**
@@ -51,7 +62,13 @@ app.post('/products', (req, res) => {
  * и других GET /products/ссылка_на_товар
  */
 app.get('/products/:slug', (req, res) => {
+  const slug = req.params.slug
   
+  const product = productsStub.find((product) => {
+    return product.slug === slug
+  })
+  
+  res.json(product)
 })
 
 /**
@@ -62,18 +79,16 @@ app.get('/products/:slug', (req, res) => {
  * и других PUT /products/ссылка_на_товар
  */
 app.put('/products/:slug', (req, res) => {
+  const slug = req.params.slug
+  const data = req.body
 
-})
-
-/**
- * Обработка HTTP-запроса
- * PATCH /products/iphone_12
- * PATCH /products/iphone
- *
- * и других PUT /products/ссылка_на_товар
- */
-app.patch('/products/:slug', (req, res) => {
-
+  const product = productsStub.find((product) => {
+    return product.slug === slug
+  })
+  
+  Object.assign(product, data)
+  
+  res.json(data)
 })
 
 /**
@@ -84,7 +99,13 @@ app.patch('/products/:slug', (req, res) => {
  * и других PUT /products/ссылка_на_товар
  */
 app.delete('/products/:slug', (req, res) => {
+  const slug = req.params.slug
 
+  productsStub.filter((product) => {
+    return product.slug !== slug
+  })
+  
+  res.json({})
 })
 
 /**
