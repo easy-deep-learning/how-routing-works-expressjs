@@ -1,118 +1,77 @@
 const express = require('express')
-const bodyParser = require('body-parser')
+const passport = require('passport')
+const FacebookStrategy = require('passport-facebook').Strategy
+
+// Configure the Facebook strategy for use by Passport.
+//
+// OAuth 2.0-based strategies require a `verify` function which receives the
+// credential (`accessToken`) for accessing the Facebook API on the user's
+// behalf, along with the user's profile.  The function must invoke `cb`
+// with a user object, which will be set at `req.user` in route handlers after
+// authentication.
+passport.use(new FacebookStrategy({
+    clientID: process.env.AUTH_STRATEGY_FACEBOOK_CLIENT_ID,
+    clientSecret: process.env.AUTH_STRATEGY_FACEBOOK_CLIENT_SECRET,
+    callbackURL: process.env.AUTH_STRATEGY_FACEBOOK_CLIENT_CALLBACK_URI,
+  },
+  function (accessToken, refreshToken, profile, cb) {
+    // In this example, the user's Facebook profile is supplied as the user
+    // record.  In a production-quality application, the Facebook profile should
+    // be associated with a user record in the application's database, which
+    // allows for account linking and authentication with other identity
+    // providers.
+    return cb(null, profile)
+  }))
+
+// Configure Passport authenticated session persistence.
+//
+// In order to restore authentication state across HTTP requests, Passport needs
+// to serialize users into and deserialize users out of the session.  In a
+// production-quality application, this would typically be as simple as
+// supplying the user ID when serializing, and querying the user record by ID
+// from the database when deserializing.  However, due to the fact that this
+// example does not have a database, the complete Facebook profile is serialized
+// and deserialized.
+passport.serializeUser(function (user, cb) {
+  cb(null, user)
+})
+
+passport.deserializeUser(function (obj, cb) {
+  cb(null, obj)
+})
 
 const app = express()
 
-const port = 3030
-const productsStub = [
-  { id: 1, name: 'iphone 12', price: 600,  slug: 'iphone_12'},
-  { id: 2, name: 'iphone 12 mini', price: 500, slug: 'iphone_12_mini' },
-  { id: 3, name: 'iphone SE 2020', count: 400, slug: 'iphone_SE_2020' },
-]
+app.use(require('express-session')({
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true,
+}))
+app.use(require('cookie-parser')())
 
-// parse application/json
-app.use(bodyParser.json())
+// Initialize Passport and restore authentication state, if any, from the
+// session.
+app.use(passport.initialize())
+app.use(passport.session())
 
-// Routing
-app.get('/', (req, res) => {
-  res.send(`Hello World! Now is ${Date.now()}`)
-  
-  /*
-  *  С главной страницы редирект на Корзину
-  * */
-  // res.redirect('/cart');
-})
+app.get('/login/facebook',
+  passport.authenticate('facebook'))
 
-/*
- * Для сущности `products` реализован набор CRUD-операций
- * - create
- * - read
- * - update
- * - delete
- * */
-
-
-/**
- * Обработка HTTP-запроса
- * GET /products
- */
-app.get('/products', (req, res) => {
-  res.send(productsStub)
-})
-
-/**
- * Обработка HTTP-запроса
- * POST /products
- */
-app.post('/products', (req, res) => {
-  const data = req.body
-
-  data.id = productsStub.length
-
-  productsStub.push(data)
-  
-  res.json(data)
-})
-
-/**
- * Обработка HTTP-запроса
- * GET /products/iphone_12
- * GET /products/iphone
- * 
- * и других GET /products/ссылка_на_товар
- */
-app.get('/products/:slug', (req, res) => {
-  const slug = req.params.slug
-  
-  const product = productsStub.find((product) => {
-    return product.slug === slug
+app.get(`${process.env.AUTH_STRATEGY_FACEBOOK_CLIENT_CALLBACK_URI}`,
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  function (req, res) {
+    res.redirect('/')
   })
-  
-  res.json(product)
-})
 
-/**
- * Обработка HTTP-запроса
- * PUT /products/iphone_12
- * PUT /products/iphone
- *
- * и других PUT /products/ссылка_на_товар
- */
-app.put('/products/:slug', (req, res) => {
-  const slug = req.params.slug
-  const data = req.body
-
-  const product = productsStub.find((product) => {
-    return product.slug === slug
+app.get('/profile',
+  require('connect-ensure-login').ensureLoggedIn({
+    redirectTo: '/login/facebook',
+    setReturnTo: '/profile',
+  }),
+  function (req, res) {
+    res.json({ user: req.user })
   })
-  
-  Object.assign(product, data)
-  
-  res.json(data)
-})
 
-/**
- * Обработка HTTP-запроса
- * DELETE /products/iphone_12
- * DELETE /products/iphone
- *
- * и других PUT /products/ссылка_на_товар
- */
-app.delete('/products/:slug', (req, res) => {
-  const slug = req.params.slug
-
-  productsStub.filter((product) => {
-    return product.slug !== slug
-  })
-  
-  res.json({})
-})
-
-/**
- * Роутинг для остальных сущностей вынесен в роутер
- */
-//app.use(router)
-
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+app.listen(process.env.APP_PORT, () => {
+  console.log(`Example app listening at http://localhost:${process.env.APP_PORT}`)
 })
